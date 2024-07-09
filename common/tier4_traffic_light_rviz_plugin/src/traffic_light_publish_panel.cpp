@@ -366,13 +366,16 @@ void TrafficLightPublishPanel::onVectorMap(const HADMapBin::ConstSharedPtr msg)
 {
   if (received_vector_map_) return;
   // NOTE: examples from map_loader/lanelet2_map_visualization_node.cpp
+  // 解析lanelet地图
   lanelet::LaneletMapPtr lanelet_map(new lanelet::LaneletMap);
   lanelet::utils::conversion::fromBinMsg(*msg, lanelet_map);
   lanelet::ConstLanelets all_lanelets = lanelet::utils::query::laneletLayer(lanelet_map);
+  // 获取所有交通灯
   std::vector<lanelet::TrafficLightConstPtr> tl_reg_elems =
     lanelet::utils::query::trafficLights(all_lanelets);
   std::string info = "Fetching traffic lights :";
   std::string delim = " ";
+  // 获取所有交通灯的id并且更新log
   for (auto && tl_reg_elem_ptr : tl_reg_elems) {
     for (auto && traffic_light : tl_reg_elem_ptr->trafficLights()) {
       auto id = static_cast<int>(traffic_light.id());
@@ -383,6 +386,7 @@ void TrafficLightPublishPanel::onVectorMap(const HADMapBin::ConstSharedPtr msg)
   RCLCPP_INFO_STREAM(raw_node_->get_logger(), info);
   received_vector_map_ = true;
 
+  // 更新UI组件，加到下拉列表里
   for (auto && traffic_light_id : traffic_light_ids_) {
     traffic_light_id_input_->addItem(QString::fromStdString(std::to_string(traffic_light_id)));
   }

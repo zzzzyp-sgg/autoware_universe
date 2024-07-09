@@ -106,7 +106,7 @@ void append_intersection_points(
   using FloatT = decltype(point_adapter::x_(std::declval<PointT>()));
   using Interval = common::geometry::Interval<float32_t>;
 
-  auto get_edge = [](const auto & list, const auto & iterator) {
+  auto get_edge = [](const auto & list, const auto & iterator) {  // 当前点和下一个点形成的边
     const auto next_it = std::next(iterator);
     const auto & next_pt = (next_it != list.end()) ? *next_it : list.front();
     return std::make_pair(*iterator, next_pt);

@@ -198,29 +198,29 @@ protected:
     // reset output
     m_neighbors.clear();
     // Compute bin, bin range
-    const Index3 ref_idx = m_config.index3(x, y, z);
+    const Index3 ref_idx = m_config.index3(x, y, z);  // 参考点索引
     const float32_t radius2 = radius * radius;
-    const details::BinRange idx_range = m_config.bin_range(ref_idx, radius);
+    const details::BinRange idx_range = m_config.bin_range(ref_idx, radius);  // 半径范围内的bin
     Index3 idx = idx_range.first;
     // For bins in radius
     do {  // guaranteed to have at least the bin ref_idx is in
       // update book-keeping
       ++m_bins_hit;
       // Iterating in a square/cube pattern is easier than constructing sphere pattern
-      if (m_config.is_candidate_bin(ref_idx, idx, radius2)) {
+      if (m_config.is_candidate_bin(ref_idx, idx, radius2)) { // 当前的bin在不在候选bin中
         // For point in bin
         const Index jdx = m_config.index(idx);
         const auto range = m_hash.equal_range(jdx);
         for (auto it = range.first; it != range.second; ++it) {
           const auto & pt = it->second;
           const float32_t dist2 = m_config.distance_squared(x, y, z, pt);
-          if (dist2 <= radius2) {
+          if (dist2 <= radius2) {   // 距离比较，符合要求的就加入到结果列表中
             // Only compute true distance if necessary
             m_neighbors.emplace_back(it, sqrtf(dist2));
           }
         }
       }
-    } while (m_config.next_bin(idx_range, idx));
+    } while (m_config.next_bin(idx_range, idx));  // 这里更新遍历的索引
     // update book-keeping
     m_neighbors_found += m_neighbors.size();
     return m_neighbors;

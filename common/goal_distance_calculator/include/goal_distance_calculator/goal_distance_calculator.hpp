@@ -33,13 +33,13 @@ struct Param
 
 struct Input
 {
-  geometry_msgs::msg::PoseStamped::ConstSharedPtr current_pose;
-  autoware_auto_planning_msgs::msg::Route::ConstSharedPtr route;
+  geometry_msgs::msg::PoseStamped::ConstSharedPtr current_pose;   // 当前位姿
+  autoware_auto_planning_msgs::msg::Route::ConstSharedPtr route;  // 路径
 };
 
 struct Output
 {
-  PoseDeviation goal_deviation;
+  PoseDeviation goal_deviation;    // 目标偏差(lateral/m, longitudinal/m, heading(deg/rad))
 };
 
 class GoalDistanceCalculator

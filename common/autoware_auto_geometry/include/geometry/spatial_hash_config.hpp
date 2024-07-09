@@ -97,8 +97,8 @@ public:
     m_max_x_idx{check_basis_direction(min_x, max_x)},
     m_max_y_idx{check_basis_direction(min_y, max_y)},
     m_max_z_idx{check_basis_direction(min_z, max_z)},
-    m_y_stride{m_max_x_idx + 1U},
-    m_z_stride{m_y_stride * (m_max_y_idx + 1U)}
+    m_y_stride{m_max_x_idx + 1U},               // y方向的索引步长
+    m_z_stride{m_y_stride * (m_max_y_idx + 1U)} // z方向的索引步长
   {
     if (radius <= 0.0F) {
       throw std::domain_error("Error constructing SpatialHash: must have positive side length");
@@ -251,7 +251,7 @@ protected:
     return static_cast<Index>(
       std::floor((std::min(std::max(z, m_min_z), m_max_z) - m_min_z) * m_side_length_inv));
   }
-  /// \brief Compose the provided index offsets
+  /// \brief Compose the provided index offsets(转为一维索引)
   Index bin_impl(const Index xdx, const Index ydx) const { return xdx + (ydx * m_y_stride); }
   /// \brief Compose the provided index offsets
   Index bin_impl(const Index xdx, const Index ydx, const Index zdx) const

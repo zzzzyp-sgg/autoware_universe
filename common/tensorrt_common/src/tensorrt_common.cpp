@@ -51,8 +51,8 @@ TrtCommon::TrtCommon(
       logger_.log(nvinfer1::ILogger::Severity::kERROR, "Could not load plugin library");
     }
   }
-  runtime_ = TrtUniquePtr<nvinfer1::IRuntime>(nvinfer1::createInferRuntime(logger_));
-  initLibNvInferPlugins(&logger_, "");
+  runtime_ = TrtUniquePtr<nvinfer1::IRuntime>(nvinfer1::createInferRuntime(logger_)); // 创建运行对象
+  initLibNvInferPlugins(&logger_, ""); // 初始化插件
 }
 
 void TrtCommon::setup()
@@ -102,6 +102,7 @@ bool TrtCommon::loadEngine(const std::string & engine_file_path)
 bool TrtCommon::buildEngineFromOnnx(
   const std::string & onnx_file_path, const std::string & output_engine_file_path)
 {
+  // 创建TensorRT构建器
   auto builder = TrtUniquePtr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(logger_));
   if (!builder) {
     logger_.log(nvinfer1::ILogger::Severity::kERROR, "Fail to create builder");
@@ -111,6 +112,7 @@ bool TrtCommon::buildEngineFromOnnx(
   const auto explicitBatch =
     1U << static_cast<uint32_t>(nvinfer1::NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
 
+  // 创建网络定义
   auto network =
     TrtUniquePtr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(explicitBatch));
   if (!network) {
@@ -118,12 +120,14 @@ bool TrtCommon::buildEngineFromOnnx(
     return false;
   }
 
+  // 创建配置
   auto config = TrtUniquePtr<nvinfer1::IBuilderConfig>(builder->createBuilderConfig());
   if (!config) {
     logger_.log(nvinfer1::ILogger::Severity::kERROR, "Fail to create builder config");
     return false;
   }
 
+  // 设置配置: 精度和内存池限制
   if (precision_ == "fp16" || precision_ == "int8") {
     config->setFlag(nvinfer1::BuilderFlag::kFP16);
   }
@@ -133,18 +137,21 @@ bool TrtCommon::buildEngineFromOnnx(
   config->setMaxWorkspaceSize(max_workspace_size_);
 #endif
 
+  // 创建ONNX解析器并解析模型文件
   auto parser = TrtUniquePtr<nvonnxparser::IParser>(nvonnxparser::createParser(*network, logger_));
   if (!parser->parseFromFile(
         onnx_file_path.c_str(), static_cast<int>(nvinfer1::ILogger::Severity::kERROR))) {
     return false;
   }
 
+  // 获取输入维度
   const auto input = network->getInput(0);
   const auto input_dims = input->getDimensions();
   const auto input_channel = input_dims.d[1];
   const auto input_height = input_dims.d[2];
   const auto input_width = input_dims.d[3];
 
+  // 设置优化配置
   auto profile = builder->createOptimizationProfile();
   profile->setDimensions(
     network->getInput(0)->getName(), nvinfer1::OptProfileSelector::kMIN,
@@ -172,6 +179,7 @@ bool TrtCommon::buildEngineFromOnnx(
   engine_ = TrtUniquePtr<nvinfer1::ICudaEngine>(
     runtime_->deserializeCudaEngine(plan->data(), plan->size()));
 #else
+  // 构建TensorRT引擎
   engine_ = TrtUniquePtr<nvinfer1::ICudaEngine>(builder->buildEngineWithConfig(*network, *config));
 #endif
 
@@ -184,6 +192,7 @@ bool TrtCommon::buildEngineFromOnnx(
 #if TENSORRT_VERSION_MAJOR < 8
   auto data = TrtUniquePtr<nvinfer1::IHostMemory>(engine_->serialize());
 #endif
+  // 保存引擎到文件
   std::ofstream file;
   file.open(output_engine_file_path, std::ios::binary | std::ios::out);
   if (!file.is_open()) {

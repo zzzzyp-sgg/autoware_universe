@@ -36,9 +36,9 @@ void print(Args &&... args)
 
 struct sOrderCutOff
 {
-  int N{1};
-  double Wc_rad_sec{};  // sampling frequency rad/sec
-  double fs{1.};        // cut-off frequency Hz
+  int N{1};             // 滤波器的阶数（一阶）
+  double Wc_rad_sec{};  // sampling frequency rad/sec（采样频率）
+  double fs{1.};        // cut-off frequency Hz（截止频率）
 };
 
 struct sDifferenceAnBn
@@ -109,6 +109,7 @@ private:
     std::vector<std::complex<double>> discrete_time_numerator_{{0.0, 0.0}};
   } dt_tf_{};
 
+  // 离散时间滤波器的分母系数 Bn 和 An
   // Numerator and Denominator Coefficients Bn and An of Discrete Time Filter
   sDifferenceAnBn AnBn_{};
 

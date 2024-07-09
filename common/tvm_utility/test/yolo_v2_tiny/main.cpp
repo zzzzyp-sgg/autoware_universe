@@ -261,6 +261,7 @@ TEST(PipelineExamples, SimplePipeline)
   // A memcpy means that the floats in expected_output have a well-defined binary value
   for (size_t i = 0; i < int_output.size(); i++) {
     memcpy(&expected_output[i], &int_output[i], sizeof(expected_output[i]));
+    // printf("expected_output[%zu] = %f\n", i, expected_output[i]);
   }
 
   // Test: check if the generated output is equal to the reference

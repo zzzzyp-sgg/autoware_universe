@@ -125,6 +125,10 @@ TYPED_TEST(TypedHullPocketsTest, Ushape)
   ASSERT_FLOAT_EQ(y_(pockets[0][0]), 5.0);
   ASSERT_FLOAT_EQ(x_(pockets[0][1]), 4.0);
   ASSERT_FLOAT_EQ(y_(pockets[0][1]), 2.0);
+  ASSERT_FLOAT_EQ(x_(pockets[0][2]), 2.0);
+  ASSERT_FLOAT_EQ(y_(pockets[0][2]), 2.0);
+  ASSERT_FLOAT_EQ(x_(pockets[0][3]), 2.0);
+  ASSERT_FLOAT_EQ(y_(pockets[0][3]), 5.0);
 }
 
 // Test for the use case:
