@@ -81,7 +81,7 @@ bool withinLanelet(const TrackedObject & object, const lanelet::ConstLanelet & l
   const Point p_object{obj_pos.x, obj_pos.y};
 
   auto polygon = lanelet.polygon2d().basicPolygon();
-  boost::geometry::correct(polygon);
+  boost::geometry::correct(polygon);  // 修正多边形，确保是正确的形状
 
   return boost::geometry::within(p_object, polygon);
 }
@@ -96,13 +96,13 @@ bool withinRoadLanelet(const TrackedObject & object, const lanelet::LaneletMapPt
   lanelet::BasicPoint2d search_point(obj_pos.x, obj_pos.y);
   // nearest lanelet
   constexpr double search_radius = 10.0;  // [m]
-  const auto surrounding_lanelets =
+  const auto surrounding_lanelets = // 找到距离search_point最近的lanelets
     lanelet::geometry::findNearest(lanelet_map_ptr->laneletLayer, search_point, search_radius);
 
   for (const auto & lanelet : surrounding_lanelets) {
     if (lanelet.second.hasAttribute(lanelet::AttributeName::Subtype)) {
       lanelet::Attribute attr = lanelet.second.attribute(lanelet::AttributeName::Subtype);
-      if (
+      if (  // 不考虑crosswalk和walkway
         attr.value() == lanelet::AttributeValueString::Crosswalk ||
         attr.value() == lanelet::AttributeValueString::Walkway) {
         continue;
@@ -858,7 +858,7 @@ std::vector<PredictedRefPath> MapBasedPredictionNode::getPredictedReferencePath(
     // Step1.1 Get the left lanelet
     lanelet::routing::LaneletPaths left_paths;
     auto opt_left = routing_graph_ptr_->left(current_lanelet_data.lanelet);
-    if (!!opt_left) {
+    if (!!opt_left) { // if left lanelet exists, change type to bool, keep value
       left_paths = routing_graph_ptr_->possiblePaths(*opt_left, possible_params);
     }
 
@@ -931,10 +931,10 @@ Maneuver MapBasedPredictionNode::predictObjectManeuver(
 
   // Step3. Get closest previous lanelet ID
   const auto & prev_info = object_info.at(static_cast<size_t>(prev_id));
-  const auto prev_pose = compensateTimeDelay(prev_info.pose, prev_info.twist, prev_info.time_delay);
+  const auto prev_pose = compensateTimeDelay(prev_info.pose, prev_info.twist, prev_info.time_delay);  // 补偿时间延迟
   const lanelet::ConstLanelets prev_lanelets =
     object_info.at(static_cast<size_t>(prev_id)).current_lanelets;
-  if (prev_lanelets.empty()) {
+  if (prev_lanelets.empty()) {  
     return Maneuver::LANE_FOLLOW;
   }
   lanelet::ConstLanelet prev_lanelet = prev_lanelets.front();

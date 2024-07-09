@@ -44,8 +44,8 @@ CompareElevationMapFilterComponent::CompareElevationMapFilterComponent(
   height_diff_thresh_ = this->declare_parameter("height_diff_thresh", 0.15);
   map_frame_ = this->declare_parameter("map_frame", "map");
 
-  rclcpp::QoS durable_qos{1};
-  durable_qos.transient_local();
+  rclcpp::QoS durable_qos{1};    // 服务质量，QoS用于控制ROS2中的通信行为，如可靠性、历史记录和持久性
+  durable_qos.transient_local(); // 使消息在发布者和订阅者之间的连接断开时不会丢失（持久性）
 
   sub_map_ = this->create_subscription<grid_map_msgs::msg::GridMap>(
     "input/elevation_map", durable_qos,

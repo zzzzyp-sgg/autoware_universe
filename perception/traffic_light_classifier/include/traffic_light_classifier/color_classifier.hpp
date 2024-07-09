@@ -71,9 +71,9 @@ private:
 
 private:
   enum HSV {
-    Hue = 0,
-    Sat = 1,
-    Val = 2,
+    Hue = 0,  // 色相
+    Sat = 1,  // 饱和度
+    Val = 2,  // 色调
   };
   image_transport::Publisher image_pub_;
 

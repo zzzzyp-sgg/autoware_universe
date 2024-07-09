@@ -51,6 +51,10 @@ __device__ float mish(float x)
 
   return x - 2 * __fdividef(x, n + 2);
 }
+__device__ float mish_standard(float x)
+{
+  return x * tanh(log1p(exp(x)));
+}
 template <typename T, unsigned TPB>
 __global__ void mishKernel(const T * input, T * output, int num_elem)
 {

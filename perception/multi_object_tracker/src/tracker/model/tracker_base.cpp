@@ -31,9 +31,11 @@ Tracker::Tracker(
   last_update_with_measurement_time_(time)
 {
   // Generate random number
-  std::mt19937 gen(std::random_device{}());
-  std::independent_bits_engine<std::mt19937, 8, uint8_t> bit_eng(gen);
-  std::generate(uuid_.uuid.begin(), uuid_.uuid.end(), bit_eng);
+  std::mt19937 gen(std::random_device{}()); // std::random_device{}是一种随机数生成设备，通常用于生成高质量的随机数种子
+                                            // std::mt19937(Mersenne Twister) 是一种常用的伪随机数生成器
+                                            // 因其较长的周期（2^19937-1）和较好的统计性质而广泛使用。
+  std::independent_bits_engine<std::mt19937, 8, uint8_t> bit_eng(gen);  // 用来生成固定位宽度的随机数
+  std::generate(uuid_.uuid.begin(), uuid_.uuid.end(), bit_eng);         // 用于用生成器函数填充范围内的所有元素
 }
 
 bool Tracker::updateWithMeasurement(

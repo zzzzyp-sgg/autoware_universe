@@ -91,9 +91,9 @@ trtNet::trtNet(const std::string & engineFile)
     cout << "read engine file" << engineFile << " failed" << endl;
     return;
   }
-  file.seekg(0, ios::end);
-  int length = file.tellg();
-  file.seekg(0, ios::beg);
+  file.seekg(0, ios::end);    // go to the end
+  int length = file.tellg();  // report location (this is the length)
+  file.seekg(0, ios::beg);    // go back to the beginning
   std::unique_ptr<char[]> data(new char[length]);
   file.read(data.get(), length);
   file.close();
@@ -109,14 +109,16 @@ trtNet::trtNet(const std::string & engineFile)
 void trtNet::InitEngine()
 {
   const int maxBatchSize = 1;
+  /// @var mTrtContext 执行上下文
   mTrtContext = mTrtEngine->createExecutionContext();
   assert(mTrtContext != nullptr);
+  /// @var mTrtProfiler 执行上下文的分析器
   mTrtContext->setProfiler(&mTrtProfiler);
 
   int nbBindings = mTrtEngine->getNbBindings();
 
-  mTrtCudaBuffer.resize(nbBindings);
-  mTrtBindBufferSize.resize(nbBindings);
+  mTrtCudaBuffer.resize(nbBindings);		// 存储每个绑定的 CUDA 缓冲区指针
+  mTrtBindBufferSize.resize(nbBindings);  // 存储每个绑定的缓冲区大小
   for (int i = 0; i < nbBindings; ++i) {
     Dims dims = mTrtEngine->getBindingDimensions(i);
     DataType dtype = mTrtEngine->getBindingDataType(i);
@@ -124,7 +126,7 @@ void trtNet::InitEngine()
     mTrtBindBufferSize[i] = totalSize;
     mTrtCudaBuffer[i] = safeCudaMalloc(totalSize);
     if (mTrtEngine->bindingIsInput(i)) {
-      mTrtInputCount++;
+      mTrtInputCount++;	// 输入绑定的数量
     }
   }
 

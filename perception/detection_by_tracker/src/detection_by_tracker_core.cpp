@@ -367,9 +367,12 @@ void DetectionByTracker::mergeOverSegmentedObjects(
 
     // extend shape
     autoware_auto_perception_msgs::msg::DetectedObject extended_tracked_object = tracked_object;
+    // 函数扩大了对象的形状，扩大的比例是 1.1
     extended_tracked_object.shape = extendShape(tracked_object.shape, /*scale*/ 1.1);
 
     pcl::PointCloud<pcl::PointXYZ> pcl_merged_cluster;
+    // 遍历 in_cluster_objects 中的每一个对象
+    // 对于每一个对象，函数首先计算其与跟踪对象的二维距离。如果距离大于最大搜索范围，那么就跳过这个对象
     for (const auto & initial_object : in_cluster_objects.feature_objects) {
       const float distance = tier4_autoware_utils::calcDistance2d(
         tracked_object.kinematics.pose_with_covariance.pose,
@@ -387,6 +390,7 @@ void DetectionByTracker::mergeOverSegmentedObjects(
       }
       pcl::PointCloud<pcl::PointXYZ> pcl_cluster;
       pcl::fromROSMsg(initial_object.feature.cluster, pcl_cluster);
+      // 将对象的聚类添加到合并的聚类中
       pcl_merged_cluster += pcl_cluster;
     }
 
@@ -410,6 +414,7 @@ void DetectionByTracker::mergeOverSegmentedObjects(
       continue;
     }
 
+    // 计算跟踪对象和新对象的二维 IoU，并设置为新对象的存在概率
     feature_object.object.existence_probability =
       perception_utils::get2dIoU(tracked_object, feature_object.object);
     setClusterInObjectWithFeature(in_cluster_objects.header, pcl_merged_cluster, feature_object);

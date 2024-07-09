@@ -26,13 +26,13 @@ namespace corrector_utils
 {
 struct CorrectionBBParameters
 {
-  double min_width;
+  double min_width;       // minimum width of bounding box
   double max_width;
   double default_width;
-  double min_length;
+  double min_length;      // minimum length of bounding box
   double max_length;
-  double default_length;
-};
+  double default_length;  // default length of bounding box
+}; 
 
 bool correctWithDefaultValue(
   const CorrectionBBParameters & param, autoware_auto_perception_msgs::msg::Shape & shape_output,

@@ -39,11 +39,11 @@ bool TensorRTWrapper::init(
   bool success;
   std::ifstream engine_file(engine_path);
   if (engine_file.is_open()) {
-    success = loadEngine(engine_path);
+    success = loadEngine(engine_path);    // 加载engine
   } else {
-    success = parseONNX(onnx_path, engine_path, precision);
+    success = parseONNX(onnx_path, engine_path, precision); // 解析onnx模型
   }
-  success &= createContext();
+  success &= createContext();   // 生成执行上下文
 
   return success;
 }

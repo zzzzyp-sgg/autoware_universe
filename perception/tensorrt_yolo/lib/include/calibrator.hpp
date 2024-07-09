@@ -78,16 +78,16 @@ public:
   std::vector<float> preprocess(const cv::Mat & in_img, const int c, const int w, const int h) const
   {
     cv::Mat rgb;
-    cv::cvtColor(in_img, rgb, cv::COLOR_BGR2RGB);
+    cv::cvtColor(in_img, rgb, cv::COLOR_BGR2RGB);  // BGR to RGB
 
-    cv::resize(rgb, rgb, cv::Size(w, h));
+    cv::resize(rgb, rgb, cv::Size(w, h));          // Resize
 
     cv::Mat img_float;
-    rgb.convertTo(img_float, CV_32FC3, 1 / 255.0);
+    rgb.convertTo(img_float, CV_32FC3, 1 / 255.0); // Normalize
 
     // HWC TO CHW
     std::vector<cv::Mat> input_channels(c);
-    cv::split(img_float, input_channels);
+    cv::split(img_float, input_channels);          // Split based on channels
 
     std::vector<float> result(h * w * c);
     auto data = result.data();

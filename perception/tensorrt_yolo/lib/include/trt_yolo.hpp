@@ -85,14 +85,14 @@ private:
 
 struct Config
 {
-  int num_anchors;
-  std::vector<float> anchors;
-  std::vector<float> scale_x_y;
-  float score_thresh;
-  float iou_thresh;
-  int detections_per_im;
-  bool use_darknet_layer;
-  float ignore_thresh;
+  int num_anchors;                  // 锚框数量
+  std::vector<float> anchors;       // 锚框宽高列表
+  std::vector<float> scale_x_y;     // 坐标缩放系数列表
+  float score_thresh;               // 分数阈值，过滤低于该阈值的检测结果
+  float iou_thresh;                 // IOU（交并比）阈值，用于非极大值抑制
+  int detections_per_im;            // 每张图片的最大检测数量
+  bool use_darknet_layer;           // 是否使用 Darknet 层（用于不同版本的 YOLO 实现）
+  float ignore_thresh;              // 忽略阈值，低于该阈值的检测结果将被忽略
 };
 
 class Net

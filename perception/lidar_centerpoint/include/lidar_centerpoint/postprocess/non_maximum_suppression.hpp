@@ -39,9 +39,9 @@ enum class NMS_TYPE {
 struct NMSParams
 {
   NMS_TYPE nms_type_{};
-  std::vector<std::string> target_class_names_{};
-  double search_distance_2d_{};
-  double iou_threshold_{};
+  std::vector<std::string> target_class_names_{}; //  target class names
+  double search_distance_2d_{};                   //  search distance for 2D
+  double iou_threshold_{};                        //  IoU threshold
   // double distance_threshold_{};
 };
 

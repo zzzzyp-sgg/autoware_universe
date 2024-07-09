@@ -52,17 +52,17 @@ namespace map_based_prediction
 struct ObjectData
 {
   std_msgs::msg::Header header;
-  lanelet::ConstLanelets current_lanelets;
-  lanelet::ConstLanelets future_possible_lanelets;
+  lanelet::ConstLanelets current_lanelets;          // lanelets that the object is currently on
+  lanelet::ConstLanelets future_possible_lanelets;  // lanelets that the object may enter in the future
   geometry_msgs::msg::Pose pose;
   geometry_msgs::msg::Twist twist;
   double time_delay;
 };
 
 enum class Maneuver {
-  LANE_FOLLOW = 0,
-  LEFT_LANE_CHANGE = 1,
-  RIGHT_LANE_CHANGE = 2,
+  LANE_FOLLOW = 0,        // 继续这个车道走
+  LEFT_LANE_CHANGE = 1,   // 左变道
+  RIGHT_LANE_CHANGE = 2,  // 右变道
 };
 
 struct LaneletData
@@ -73,9 +73,9 @@ struct LaneletData
 
 struct PredictedRefPath
 {
-  float probability;
-  PosePath path;
-  Maneuver maneuver;
+  float probability;  // 概率
+  PosePath path;      // 路径(std::vector<geometry_msgs::msg::Pose>)
+  Maneuver maneuver;  // 操作
 };
 
 using LaneletsData = std::vector<LaneletData>;

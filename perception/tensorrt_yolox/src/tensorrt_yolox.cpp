@@ -325,7 +325,7 @@ void TrtYoloX::qsortDescentInplace(ObjectArray & faceobjects, int left, int righ
       j--;
     }
 
-    if (i <= j) {
+    if (i <= j) { // 把大的放在一边，小的也放在一边
       // swap
       std::swap(faceobjects[i], faceobjects[j]);
 

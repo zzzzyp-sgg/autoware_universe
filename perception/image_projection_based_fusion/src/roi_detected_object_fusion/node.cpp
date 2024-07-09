@@ -85,8 +85,8 @@ void RoiDetectedObjectFusionNode::generateDetectedObjectRois(
       }
 
       std::vector<Eigen::Vector3d> vertices;
-      objectToVertices(object.kinematics.pose_with_covariance.pose, object.shape, vertices);
-      transformPoints(vertices, object2camera_affine, vertices_camera_coord);
+      objectToVertices(object.kinematics.pose_with_covariance.pose, object.shape, vertices);  // object对应的顶点
+      transformPoints(vertices, object2camera_affine, vertices_camera_coord);                 // 将顶点转换到相机坐标系下
     }
 
     double min_x(std::numeric_limits<double>::max()), min_y(std::numeric_limits<double>::max()),

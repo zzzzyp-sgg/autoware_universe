@@ -53,7 +53,7 @@ TensorrtYoloNodelet::TensorrtYoloNodelet(const rclcpp::NodeOptions & options)
   std::string mode = declare_parameter("mode", "FP32");
   gpu_device_id_ = declare_parameter("gpu_id", 0);
   yolo_config_.num_anchors = declare_parameter("num_anchors", 3);
-  auto anchors = declare_parameter(
+  auto anchors = declare_parameter( // 这里对应的是预训练得到的锚框的先验的宽和高，这里有9对
     "anchors", std::vector<double>{
                  10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326});
   std::vector<float> anchors_float(anchors.begin(), anchors.end());

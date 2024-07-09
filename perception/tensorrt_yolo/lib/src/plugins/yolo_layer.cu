@@ -88,8 +88,8 @@ __global__ void yoloLayerKernel(
   auto out_box = (out_boxes) + idx;
   auto out_class = (out_classes) + idx;
 
-  int anchor_idx = idx / total_grids;
-  idx = idx - total_grids * anchor_idx;
+  int anchor_idx = idx / total_grids;     // 锚框索引
+  idx = idx - total_grids * anchor_idx;   // 这里的idx就相当于一个局部索引
   int info_len = 5 + num_classes;
   auto cur_input = static_cast<const float *>(input) + anchor_idx * (info_len * total_grids);
 

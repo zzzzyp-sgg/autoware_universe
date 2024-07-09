@@ -217,17 +217,17 @@ bool CenterPointTVM::detect(
   std::fill(coordinates_->begin(), coordinates_->end(), -1);
   std::fill(num_points_per_voxel_->begin(), num_points_per_voxel_->end(), 0);
 
-  if (!preprocess(input_pointcloud_msg, tf_buffer)) {
+  if (!preprocess(input_pointcloud_msg, tf_buffer)) { // 预处理
     RCLCPP_WARN_STREAM(
       rclcpp::get_logger("lidar_centerpoint"), "Fail to preprocess and skip to detect.");
     return false;
   }
 
   MixedInputs voxel_inputs{num_voxels_, *voxels_, *num_points_per_voxel_, *coordinates_};
-  auto ve_output = ve_pipeline->schedule(voxel_inputs);
+  auto ve_output = ve_pipeline->schedule(voxel_inputs);     // 预测(encoder)
 
   MixedInputs pillar_inputs{num_voxels_, *ve_output, *num_points_per_voxel_, *coordinates_};
-  auto bnh_output = bnh_pipeline->schedule(pillar_inputs);
+  auto bnh_output = bnh_pipeline->schedule(pillar_inputs);  // 预测(backboneneckhead)
 
   det_boxes3d = bnh_output;
   if (det_boxes3d.size() == 0) {

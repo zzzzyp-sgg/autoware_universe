@@ -27,12 +27,12 @@ namespace gnn_solver
 struct ResidualEdge
 {
   // Destination node
-  const int dst;
-  int capacity;
-  const double cost;
-  int flow;
+  const int dst;      // 残差边指向的目标节点
+  int capacity;       // 残差边的容量
+  const double cost;  // 残差边的成本(cost)
+  int flow;           // 通过当前边的流量(flow)
   // Access to the reverse edge by adjacency_list.at(dst).at(reverse)
-  const int reverse;
+  const int reverse;  // 反向边的索引
 
   // ResidualEdge()
   // : dst(0), capacity(0), cost(0), flow(0), reverse(0) {}
@@ -73,9 +73,9 @@ void SSP::maximizeLinearAssignment(
     n_dummies = 0;
   }
 
-  int source = 0;
-  int sink = n_agents + n_tasks + 1;
-  int n_nodes = n_agents + n_tasks + n_dummies + 2;
+  int source = 0;                                   // 源节点
+  int sink = n_agents + n_tasks + 1;                // 汇节点
+  int n_nodes = n_agents + n_tasks + n_dummies + 2; // 节点总数
 
   // // Print cost matrix
   // std::cout << std::endl;
@@ -182,18 +182,28 @@ void SSP::maximizeLinearAssignment(
   }
 
   // Maximum flow value
+  // 最大流量，其值为n_agents（代理节点数量）和n_tasks（任务节点数量）中的较小值。
+  // 在流网络中，最大流量是指从源节点到汇节点可以通过的最大流量。
   const int max_flow = std::min(n_agents, n_tasks);
 
   // Feasible potentials
+  // 用于存储每个节点的势能。在最小成本流问题中，势能是一种用于调整边的成本的技巧
+  // 可以保证所有的边的调整后的成本都是非负的
   std::vector<double> potentials(n_nodes, 0);
 
   // Shortest path lengths
+  // 用于存储从源节点到每个节点的最短路径长度
+  // 初始时，所有节点的最短路径长度都设置为无穷大（INF_DIST）
   std::vector<double> distances(n_nodes, INF_DIST);
 
   // Whether previously visited the node or not
+  // 用于存储每个节点是否已经被访问过
+  // 初始时，所有节点都没有被访问过
   std::vector<bool> is_visited(n_nodes, false);
 
   // Parent node (<prev_node, edge_index>)
+  // 用于存储每个节点的父节点和到达该节点的边的索引
+  // 在计算最短路径时，父节点是用于记录路径的重要信息，可以用于在找到最短路径后回溯路径
   std::vector<std::pair<int, int>> prev_values(n_nodes);
 
   for (int i = 0; i < max_flow; ++i) {

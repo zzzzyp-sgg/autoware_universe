@@ -126,7 +126,7 @@ void ElevationMapLoaderNode::publish()
 
   elevation_map_.setFrameId(map_frame_);
   auto msg = grid_map::GridMapRosConverter::toMessage(elevation_map_);
-  pub_elevation_map_->publish(std::move(msg));
+  pub_elevation_map_->publish(std::move(msg));  // 这里用到move是因为后边就不用msg了，所以能避免不必要的copy
 
   if (use_elevation_map_cloud_publisher_) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr elevation_map_cloud_ptr =
@@ -175,6 +175,14 @@ void ElevationMapLoaderNode::onVectorMap(
   }
 }
 
+/**
+ * @brief Creates an elevation map based on the input point cloud data.
+ * 
+ * This function creates an elevation map by setting the input point cloud data
+ * to the grid map point cloud loader. If the lane filter is enabled, it applies
+ * the lane filter to the point cloud data before setting it to the loader. After
+ * creating the elevation map, it optionally performs inpainting and saves the map.
+ */
 void ElevationMapLoaderNode::createElevationMap()
 {
   if (lane_filter_.use_lane_filter_) {

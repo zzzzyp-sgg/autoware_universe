@@ -205,7 +205,7 @@ Eigen::Affine3d RANSACGroundFilterComponent::getPlaneAffine(
   pcl::PointXYZ centroid_point;
   centroid.get(centroid_point);
   Eigen::Translation<double, 3> trans(centroid_point.x, centroid_point.y, centroid_point.z);
-  const ground_segmentation::PlaneBasis basis = getPlaneBasis(plane_normal);
+  const ground_segmentation::PlaneBasis basis = getPlaneBasis(plane_normal);  // 平面的基地向量
   Eigen::Matrix3d rot;
   rot << basis.e_x.x(), basis.e_y.x(), basis.e_z.x(), basis.e_x.y(), basis.e_y.y(), basis.e_z.y(),
     basis.e_x.z(), basis.e_y.z(), basis.e_z.z();
@@ -251,8 +251,8 @@ void RANSACGroundFilterComponent::filter(
   filter.filter(*downsampled_cloud);
 
   // apply ransac
-  pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
-  pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+  pcl::PointIndices::Ptr inliers(new pcl::PointIndices);                // 最后在平面内的点
+  pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients); // 拟合得到的平面模型
   applyRANSAC(downsampled_cloud, inliers, coefficients);
 
   if (coefficients->values.empty()) {

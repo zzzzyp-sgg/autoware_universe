@@ -76,8 +76,8 @@ struct Obstacle
   float score;
   float height;
   float heading;
-  MetaType meta_type;
-  std::vector<float> meta_type_probs;
+  MetaType meta_type; // 障碍物类型的信息
+  std::vector<float> meta_type_probs; // 障碍物类型的概率
 
   Obstacle() : score(0.0), height(-5.0), heading(0.0), meta_type(META_UNKNOWN)
   {

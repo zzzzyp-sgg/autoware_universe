@@ -228,9 +228,9 @@ bool TrafficLightSSDFineDetectorNodelet::cvMat2CnnInput(
     cv::resize(in_imgs.at(i), resized, cv::Size(width_, height_));
 
     cv::Mat pixels;
-    resized.convertTo(pixels, CV_32FC3, 1.0 / 255, 0);
+    resized.convertTo(pixels, CV_32FC3, 1.0 / 255, 0);  // 0-1
     std::vector<float> img;
-    if (pixels.isContinuous()) {
+    if (pixels.isContinuous()) {  // Check if pixels is continuous
       img.assign(
         reinterpret_cast<const float *>(pixels.datastart),
         reinterpret_cast<const float *>(pixels.dataend));
@@ -239,7 +239,7 @@ bool TrafficLightSSDFineDetectorNodelet::cvMat2CnnInput(
     }
 
     for (int c = 0; c < channel_; ++c) {
-      for (int j = 0, hw = width_ * height_; j < hw; ++j) {
+      for (int j = 0, hw = width_ * height_; j < hw; ++j) { // HWC -> CHW
         data[i * channel_ * width_ * height_ + c * hw + j] =
           (img[channel_ * j + 2 - c] - mean_[c]) / std_[c];
       }

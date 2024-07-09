@@ -36,7 +36,7 @@ ApolloLidarSegmentationPreProcessor::ApolloLidarSegmentationPreProcessor(
   const tvm_utility::pipeline::InferenceEngineTVMConfig & config, int32_t range,
   bool8_t use_intensity_feature, bool8_t use_constant_feature, float32_t min_height,
   float32_t max_height)
-: input_channels(config.network_inputs[0].second[1]),
+: input_channels(config.network_inputs[0].node_shape[1]),
   input_width(config.network_inputs[0].second[2]),
   input_height(config.network_inputs[0].second[3]),
   datatype_bytes(config.tvm_dtype_bits / 8),
