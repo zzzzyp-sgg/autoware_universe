@@ -25,11 +25,11 @@
 
 struct Ellipse
 {
-  double long_radius;
-  double short_radius;
-  double yaw;
-  Eigen::Matrix2d P;
-  double size_lateral_direction;
+  double long_radius;             // 椭圆的长轴
+  double short_radius;            // 椭圆的短轴
+  double yaw;                     // 椭圆的方向
+  Eigen::Matrix2d P;              // 椭圆的协方差矩阵
+  double size_lateral_direction;  // 椭圆的横向尺寸
 };
 
 class LocalizationErrorMonitor : public rclcpp::Node

@@ -56,9 +56,9 @@ EKFLocalizer::EKFLocalizer(const std::string & node_name, const rclcpp::NodeOpti
   dim_x_(6 /* x, y, yaw, yaw_bias, vx, wz */)
 {
   /* convert to continuous to discrete */
-  proc_cov_vx_d_ = std::pow(params_.proc_stddev_vx_c * ekf_dt_, 2.0);
-  proc_cov_wz_d_ = std::pow(params_.proc_stddev_wz_c * ekf_dt_, 2.0);
-  proc_cov_yaw_d_ = std::pow(params_.proc_stddev_yaw_c * ekf_dt_, 2.0);
+  proc_cov_vx_d_ = std::pow(params_.proc_stddev_vx_c * ekf_dt_, 2.0);   // x方向速度
+  proc_cov_wz_d_ = std::pow(params_.proc_stddev_wz_c * ekf_dt_, 2.0);   // z轴角速度
+  proc_cov_yaw_d_ = std::pow(params_.proc_stddev_yaw_c * ekf_dt_, 2.0); // yaw角修正项目
 
   is_activated_ = false;
 
@@ -442,7 +442,7 @@ void EKFLocalizer::measurementUpdatePose(const geometry_msgs::msg::PoseWithCovar
   yaw = yaw_error + ekf_yaw;
 
   /* Set measurement matrix */
-  Eigen::MatrixXd y(dim_y, 1);
+  Eigen::MatrixXd y(dim_y, 1);  // x, y, yaw
   y << pose.pose.pose.position.x, pose.pose.pose.position.y, yaw;
 
   if (hasNan(y) || hasInf(y)) {

@@ -25,10 +25,10 @@ struct Particle
   : initial_pose(a_initial_pose), result_pose(a_result_pose), score(a_score), iteration(a_iteration)
   {
   }
-  geometry_msgs::msg::Pose initial_pose;
-  geometry_msgs::msg::Pose result_pose;
-  double score;
-  int iteration;
+  geometry_msgs::msg::Pose initial_pose;  // 初始位姿
+  geometry_msgs::msg::Pose result_pose;   // 结果位姿
+  double score;                           // 得分  
+  int iteration;                          // 迭代次数
 };
 
 #endif  // NDT_SCAN_MATCHER__PARTICLE_HPP_

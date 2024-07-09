@@ -1,67 +1,88 @@
-/**:
-  ros__parameters:
+ros__parameters:
+  # Vehicle reference frame
+  base_frame: "base_link"
+  # 定义车辆的基准坐标系，通常为车辆中心
 
-    # Vehicle reference frame
-    base_frame: "base_link"
+  # Subscriber queue size
+  input_sensor_points_queue_size: 1
+  # 订阅器的队列大小，决定了在处理新消息之前可以存储的最大未处理消息数
 
-    # Subscriber queue size
-    input_sensor_points_queue_size: 1
+  # The maximum difference between two consecutive
+  # transformations in order to consider convergence
+  trans_epsilon: 0.01
+  # 收敛准则：两个连续转换之间的最大差异，差异小于这个值时认为收敛
 
-    # The maximum difference between two consecutive
-    # transformations in order to consider convergence
-    trans_epsilon: 0.01
+  # The newton line search maximum step length
+  step_size: 0.1
+  # 牛顿线搜索的最大步长，用于优化过程中
 
-    # The newton line search maximum step length
-    step_size: 0.1
+  # The ND voxel grid resolution
+  resolution: 2.0
+  # NDT体素网格的分辨率，定义每个体素的大小
 
-    # The ND voxel grid resolution
-    resolution: 2.0
+  # The number of iterations required to calculate alignment
+  max_iterations: 30
+  # 最大迭代次数，计算配准时允许的最大迭代次数
 
-    # The number of iterations required to calculate alignment
-    max_iterations: 30
+  # Converged param type
+  # 0=TRANSFORM_PROBABILITY, 1=NEAREST_VOXEL_TRANSFORMATION_LIKELIHOOD
+  converged_param_type: 1
+  # 收敛参数类型：
+  # 0 表示使用转换概率 (TRANSFORM_PROBABILITY)
+  # 1 表示使用最近体素转换可能性 (NEAREST_VOXEL_TRANSFORMATION_LIKELIHOOD)
 
-    # Converged param type
-    # 0=TRANSFORM_PROBABILITY, 1=NEAREST_VOXEL_TRANSFORMATION_LIKELIHOOD
-    converged_param_type: 1
+  # If converged_param_type is 0
+  # Threshold for deciding whether to trust the estimation result
+  converged_param_transform_probability: 3.0
+  # 如果收敛参数类型为 0（转换概率），用于判断是否信任估计结果的阈值
 
-    # If converged_param_type is 0
-    # Threshold for deciding whether to trust the estimation result
-    converged_param_transform_probability: 3.0
+  # If converged_param_type is 1
+  # Threshold for deciding whether to trust the estimation result
+  converged_param_nearest_voxel_transformation_likelihood: 2.3
+  # 如果收敛参数类型为 1（最近体素转换可能性），用于判断是否信任估计结果的阈值
 
-    # If converged_param_type is 1
-    # Threshold for deciding whether to trust the estimation result
-    converged_param_nearest_voxel_transformation_likelihood: 2.3
+  # The number of particles to estimate initial pose
+  initial_estimate_particles_num: 100
+  # 用于估计初始位置的粒子数目
 
-    # The number of particles to estimate initial pose
-    initial_estimate_particles_num: 100
+  # Tolerance of timestamp difference between initial_pose and sensor pointcloud. [sec]
+  initial_pose_timeout_sec: 1.0
+  # 初始位置与传感器点云之间时间戳差异的容忍度（秒）
 
-    # Tolerance of timestamp difference between initial_pose and sensor pointcloud. [sec]
-    initial_pose_timeout_sec: 1.0
+  # Tolerance of distance difference between two initial poses used for linear interpolation. [m]
+  initial_pose_distance_tolerance_m: 10.0
+  # 用于线性插值的两个初始位置之间的距离差异的容忍度（米）
 
-    # Tolerance of distance difference between two initial poses used for linear interpolation. [m]
-    initial_pose_distance_tolerance_m: 10.0
+  # neighborhood search method
+  # 0=KDTREE, 1=DIRECT26, 2=DIRECT7, 3=DIRECT1
+  neighborhood_search_method: 0
+  # 邻域搜索方法：
+  # 0 表示 K-D 树 (KDTREE)
+  # 1 表示 26 方向搜索 (DIRECT26)
+  # 2 表示 7 方向搜索 (DIRECT7)
+  # 3 表示 1 方向搜索 (DIRECT1)
 
-    # neighborhood search method
-    # 0=KDTREE, 1=DIRECT26, 2=DIRECT7, 3=DIRECT1
-    neighborhood_search_method: 0
+  # Number of threads used for parallel computing
+  num_threads: 4
+  # 用于并行计算的线程数
 
-    # Number of threads used for parallel computing
-    num_threads: 4
+  # The covariance of output pose
+  # Do note that this covariance matrix is empirically derived
+  output_pose_covariance:
+    [
+      0.0225, 0.0,   0.0,   0.0,      0.0,      0.0,
+      0.0,   0.0225, 0.0,   0.0,      0.0,      0.0,
+      0.0,   0.0,   0.0225, 0.0,      0.0,      0.0,
+      0.0,   0.0,   0.0,   0.000625, 0.0,      0.0,
+      0.0,   0.0,   0.0,   0.0,      0.000625, 0.0,
+      0.0,   0.0,   0.0,   0.0,      0.0,      0.000625,
+    ]
+  # 输出位置的协方差矩阵，这是经验性得出的
 
-    # The covariance of output pose
-    # Do note that this covariance matrix is empirically derived
-    output_pose_covariance:
-      [
-        0.0225, 0.0,   0.0,   0.0,      0.0,      0.0,
-        0.0,   0.0225, 0.0,   0.0,      0.0,      0.0,
-        0.0,   0.0,   0.0225, 0.0,      0.0,      0.0,
-        0.0,   0.0,   0.0,   0.000625, 0.0,      0.0,
-        0.0,   0.0,   0.0,   0.0,      0.000625, 0.0,
-        0.0,   0.0,   0.0,   0.0,      0.0,      0.000625,
-      ]
+  # Regularization switch
+  regularization_enabled: false
+  # 正则化开关，用于控制是否启用正则化
 
-    # Regularization switch
-    regularization_enabled: false
-
-    # Regularization scale factor
-    regularization_scale_factor: 0.01
+  # Regularization scale factor
+  regularization_scale_factor: 0.01
+  # 正则化缩放因子，用于控制正则化的强度

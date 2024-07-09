@@ -39,7 +39,7 @@ bool Tf2ListenerModule::get_transform(
   const std::string & source_frame, const TransformStamped::SharedPtr & transform_stamped_ptr) const
 {
   const TransformStamped identity =
-    identity_transform_stamped(timestamp, target_frame, source_frame);
+    identity_transform_stamped(timestamp, target_frame, source_frame);  // 这就是个单位转换阵
 
   if (target_frame == source_frame) {
     *transform_stamped_ptr = identity;

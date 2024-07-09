@@ -201,16 +201,16 @@ NDTScanMatcher::NDTScanMatcher()
   diagnostics_pub_ =
     this->create_publisher<diagnostic_msgs::msg::DiagnosticArray>("/diagnostics", 10);
 
-  service_trigger_node_ = this->create_service<std_srvs::srv::SetBool>(
+  service_trigger_node_ = this->create_service<std_srvs::srv::SetBool>(       // 用于激活节点的
     "trigger_node_srv",
     std::bind(
       &NDTScanMatcher::service_trigger_node, this, std::placeholders::_1, std::placeholders::_2),
     rclcpp::ServicesQoS().get_rmw_qos_profile(), main_callback_group);
 
-  diagnostic_thread_ = std::thread(&NDTScanMatcher::timer_diagnostic, this);
+  diagnostic_thread_ = std::thread(&NDTScanMatcher::timer_diagnostic, this);  // 这里依旧是反应状态信息的
   diagnostic_thread_.detach();
 
-  tf2_listener_module_ = std::make_shared<Tf2ListenerModule>(this);
+  tf2_listener_module_ = std::make_shared<Tf2ListenerModule>(this);           // 用于监听坐标关系的
   map_module_ = std::make_unique<MapModule>(this, &ndt_ptr_mtx_, ndt_ptr_, main_callback_group);
   pose_init_module_ = std::make_unique<PoseInitializationModule>(
     this, &ndt_ptr_mtx_, ndt_ptr_, tf2_listener_module_, map_frame_, main_callback_group,
@@ -340,7 +340,7 @@ void NDTScanMatcher::callback_sensor_points(
     this, sensor_ros_time, initial_pose_msg_ptr_array_, initial_pose_timeout_sec_,
     initial_pose_distance_tolerance_m_);
   if (!interpolator.is_success()) return;
-  pop_old_pose(initial_pose_msg_ptr_array_, sensor_ros_time);
+  pop_old_pose(initial_pose_msg_ptr_array_, sensor_ros_time);   // 弹出旧的位置信息
   initial_pose_array_lock.unlock();
 
   // if regularization is enabled and available, set pose to NDT for regularization
@@ -385,14 +385,14 @@ void NDTScanMatcher::callback_sensor_points(
   These bugs are now resolved in original pcl implementation.
   https://github.com/PointCloudLibrary/pcl/blob/424c1c6a0ca97d94ca63e5daff4b183a4db8aae4/registration/include/pcl/registration/impl/ndt.hpp#L73-L180
   *****************************************************************************/
-  bool is_ok_iteration_num =
+  bool is_ok_iteration_num =      // 迭代次数的判断
     validate_num_iteration(ndt_result.iteration_num, ndt_ptr_->getMaximumIterations() + 2);
   bool is_local_optimal_solution_oscillation = false;
-  if (!is_ok_iteration_num) {
+  if (!is_ok_iteration_num) {     // 这里感觉是判断输出结果的稳定性
     is_local_optimal_solution_oscillation = validate_local_optimal_solution_oscillation(
       transformation_msg_array, oscillation_threshold_, inversion_vector_threshold_);
   }
-  bool is_ok_converged_param = validate_converged_param(
+  bool is_ok_converged_param = validate_converged_param(  // 这里是根据收敛参数来判断是否收敛
     ndt_result.transform_probability, ndt_result.nearest_voxel_transformation_likelihood);
   bool is_converged = is_ok_iteration_num && is_ok_converged_param;
   static size_t skipping_publish_num = 0;
